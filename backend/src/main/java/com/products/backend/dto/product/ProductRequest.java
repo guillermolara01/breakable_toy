@@ -1,4 +1,5 @@
 package com.products.backend.dto.product;
+import com.products.backend.model.Category;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
@@ -10,7 +11,7 @@ public class ProductRequest {
     private String name;
 
     @NotBlank
-    private String category;
+    private Category category;
 
     @NotNull
     @DecimalMin(value = "0.0", inclusive = false)
@@ -31,11 +32,11 @@ public class ProductRequest {
         this.name = name;
     }
 
-    public String getCategory() {
+    public Category getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
 
