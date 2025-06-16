@@ -1,0 +1,4 @@
+if ["$useremail" != "guillermo.gonzalez@encora.com"]
+then
+	useremail="guillermo.gonzalez@encora.com"
+fi
