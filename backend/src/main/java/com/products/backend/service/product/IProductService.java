@@ -6,11 +6,11 @@ import java.util.Optional;
 
 public interface IProductService {
  List<ProductResponse> getAllProducts(
-            Optional<String> name,
-            Optional<String> category,
-            Optional<Boolean> available,
-            Optional<String> sortBy,
-            Optional<String> direction,
+            String name,
+            String category,
+            Boolean available,
+            String sortBy,
+            String direction,
             int page,
             int size
     );

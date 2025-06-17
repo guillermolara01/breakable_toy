@@ -39,25 +39,38 @@ public class ProductService implements IProductService{
     
     @Override
     public List<ProductResponse> getAllProducts(
-            Optional<String> name,
-            Optional<String> category,
-            Optional<Boolean> available,
-            Optional<String> sortBy,
-            Optional<String> direction,
+            String name,
+            String category,
+            Boolean available,
+            String sortBy,
+            String direction,
             int page,
             int size
     ) {
-        Comparator<Product> comparator = getComparator(sortBy.orElse("name"), direction.orElse("asc"));
+        sortBy = sortBy != null && !sortBy.isEmpty() ? sortBy : "name";
+        direction = direction != null && !direction.isEmpty() ? direction : "asc";
+        Comparator<Product> comparator = getComparator(sortBy, direction);
 
-        return repository.findAll().stream()
-                .filter(p -> name.map(n -> p.getName().toLowerCase().contains(n.toLowerCase())).orElse(true))
-                .filter(p -> category.map(c -> p.getCategory().getName().equalsIgnoreCase(c)).orElse(true))
-                .filter(p -> available.map(a -> a ? p.getStock() > 0 : p.getStock() == 0).orElse(true))
+        List<ProductResponse> filteredProducts =  repository.findAll().stream()
+                .filter(product -> {
+                        return name == null || name.isBlank()|| product.getName().toLowerCase().contains(name.toLowerCase());
+                })
+                .filter(
+                        product -> {
+                            return category == null || category.isBlank() || product.getCategory().getName().equalsIgnoreCase(category);
+                        }
+                )
+                .filter(product -> {
+                    if(available == null) return  true; // if not available filter, we return anything.
+                    return available ? product.getStock() > 0 : product.getStock() == 0;
+                })
                 .sorted(comparator)
                 .skip((long) page * size)
                 .limit(size)
                 .map(this::setResponseProduct)
-                .collect(Collectors.toList());
+                .toList();
+
+        return  filteredProducts;
     }
 
     @Override

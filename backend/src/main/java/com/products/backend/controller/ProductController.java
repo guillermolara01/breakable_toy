@@ -21,11 +21,11 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<List<ProductResponse>> getAllProducts(
-            @RequestParam Optional<String> name,
-            @RequestParam Optional<String> category,
-            @RequestParam Optional<Boolean> available,
-            @RequestParam Optional<String> sortBy,
-            @RequestParam Optional<String> direction,
+            @RequestParam(required = false) String name,
+            @RequestParam (required = false)String category,
+            @RequestParam (required = false)Boolean available,
+            @RequestParam (required = false)String sortBy,
+            @RequestParam (required = false)String direction,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
