@@ -30,8 +30,8 @@ public class ProductService implements IProductService{
         response.setCategory(product.getCategory());
         response.setUnitPrice(product.getUnitPrice());
         response.setExpirationDate(product.getExpirationDate());
-        response.setQuantityInStock(product.getStock());
-        response.setCreatedAt(product.getCreatedAt());
+        response.setStock(product.getStock());
+        //response.setCreatedAt(product.getCreatedAt());
         response.setUpdatedAt(product.getUpdatedAt());
         return response;
     }
@@ -115,12 +115,20 @@ public class ProductService implements IProductService{
         return repository.findById(id).map(this::setResponseProduct);
     }
 
+    @Override
+    public ProductResponse deleteProductById(Long id){
+        Product deleted = repository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Product not found"));
+        this.repository.delete(id);
+        return  setResponseProduct(deleted);
+    }
+
     private void mapRequestToProduct(ProductRequest request, Product product) {
         product.setName(request.getName());
         product.setCategory(request.getCategory());
         product.setUnitPrice(request.getUnitPrice());
         product.setExpirationDate(request.getExpirationDate());
-        product.setStock(request.getQuantityInStock());
+        product.setStock(request.getStock());
     }
 
     private Comparator<Product> getComparator(String sortBy, String direction) {
@@ -138,5 +146,6 @@ public class ProductService implements IProductService{
 
         return comparator;
     }
+
 
 }

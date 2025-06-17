@@ -73,4 +73,10 @@ public class ProductController {
         ProductResponse updated = productService.markInStock(id, quantity);
         return ResponseEntity.ok(updated);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ProductResponse> deleteProduct(@PathVariable Long id){
+        ProductResponse deleted = productService.deleteProductById(id);
+        return ResponseEntity.ok(deleted);
+    }
 }

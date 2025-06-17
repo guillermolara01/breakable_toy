@@ -7,13 +7,13 @@ import java.time.LocalDate;
 public class ProductResponse {
     private Long id;
     private String name;
-    private Category category;
+    private Long categoryId;
     private Double unitPrice;
     private LocalDate expirationDate;
-    private Integer quantityInStock;
-    private LocalDate createdAt;
+    private Integer stock;
+    //private LocalDate createdAt;
     private LocalDate updatedAt;
-
+    private Category category;
     // Getters and Setters
     public Long getId() {
         return id;
@@ -55,21 +55,21 @@ public class ProductResponse {
         this.expirationDate = expirationDate;
     }
 
-    public Integer getQuantityInStock() {
-        return quantityInStock;
+    public Integer getStock() {
+        return stock;
     }
 
-    public void setQuantityInStock(Integer quantityInStock) {
-        this.quantityInStock = quantityInStock;
+    public void setStock(Integer quantityInStock) {
+        this.stock = quantityInStock;
     }
 
-    public LocalDate getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDate createdAt) {
-        this.createdAt = createdAt;
-    }
+//    public LocalDate getCreatedAt() {
+//        return createdAt;
+//    }
+//
+//    public void setCreatedAt(LocalDate createdAt) {
+//        this.createdAt = createdAt;
+//    }
 
     public LocalDate getUpdatedAt() {
         return updatedAt;

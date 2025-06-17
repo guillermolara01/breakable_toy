@@ -10,7 +10,6 @@ public class ProductRequest {
     @Size(max = 120)
     private String name;
 
-    @NotBlank
     private Category category;
 
     @NotNull
@@ -21,7 +20,7 @@ public class ProductRequest {
 
     @NotNull
     @Min(0)
-    private Integer quantityInStock;
+    private Integer stock;
 
     // Getters and Setters
     public String getName() {
@@ -56,11 +55,11 @@ public class ProductRequest {
         this.expirationDate = expirationDate;
     }
 
-    public Integer getQuantityInStock() {
-        return quantityInStock;
+    public Integer getStock() {
+        return stock;
     }
 
-    public void setQuantityInStock(Integer quantityInStock) {
-        this.quantityInStock = quantityInStock;
+    public void setStock(Integer stock) {
+        this.stock = stock;
     }
 }

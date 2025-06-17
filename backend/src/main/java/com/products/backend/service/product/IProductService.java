@@ -22,6 +22,6 @@ public interface IProductService {
     ProductResponse markOutOfStock(Long id);
 
     ProductResponse markInStock(Long id, Integer quantity);
-
+      ProductResponse deleteProductById(Long id);
     Optional<ProductResponse> getProductById(Long id);
 }
