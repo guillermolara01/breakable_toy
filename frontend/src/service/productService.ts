@@ -1,13 +1,26 @@
 import axios from 'axios'
 import type IProduct from '../interfaces/Product/IProduct';
+import type IFilterParams from '../interfaces/FilteringParams/IFilterParams';
 
-export async function getAllProducts(){
-    try{
-        const result = await axios.get(`${import.meta.env.VITE_API_URL}products`);
-        return result.data;
-    }catch(error:unknown){
-console.log(error);
-    }
+
+export async function getAllProducts(params: IFilterParams = {}) {
+  try {
+    const query = new URLSearchParams();
+
+    if (params.name) query.append('name', params.name);
+    if (params.category) query.append('category', params.category);
+    if (params.available !== undefined) query.append('available', String(params.available));
+    if (params.sortBy) query.append('sortBy', params.sortBy);
+    if (params.direction) query.append('direction', params.direction);
+    query.append('page', String(params.page ?? 0));
+    query.append('size', String(params.size ?? 10));
+
+    const result = await axios.get<IProduct[]>(`${import.meta.env.VITE_API_URL}products?${query.toString()}`);
+    return result.data;
+  } catch (error: unknown) {
+    console.error(error);
+    throw error;
+  }
 }
 
 export async function getById(id: number){
