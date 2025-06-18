@@ -19,7 +19,7 @@ export async function getAllProducts(params: IFilterParams = {}) {
     return result.data;
   } catch (error: unknown) {
     console.error(error);
-    throw error;
+    throw(error);
   }
 }
 
@@ -30,6 +30,7 @@ export async function getById(id: number){
         return result.data;
     }catch(error:unknown){
         console.log(error);
+        throw(error);
     }
 }
 
@@ -40,6 +41,7 @@ export async function createProduct(product:IProduct) {
         return savedProduct;
     }catch(error:unknown){
         console.log(error);
+        throw(error);
     }
 }
 
@@ -50,6 +52,7 @@ export async function setOutOfStock(id: number){
 
     }catch(error:unknown){
         console.log(error);
+        throw(error);
     }
 }
 export async function setInStock(id:number){
@@ -59,6 +62,7 @@ export async function setInStock(id:number){
 
     }catch(error:unknown){
         console.log(error);
+        throw(error);
     }
 }
 
@@ -69,5 +73,6 @@ export async function deleteProduct(id: number){
 
     }catch(error:unknown){
         console.log(error);
+        throw(error);
     }
 }
