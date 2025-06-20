@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { getAllProducts } from '../service/productService';
-import type IProduct from '../interfaces/Product/IProduct';
 import type  IFilterParams from '../interfaces/FilteringParams/IFilterParams';
+import type IPaginatedProducts from '../interfaces/Product/IPaginatedProducts';
 
 export default function useProducts(initialParams: IFilterParams = {}) {
-  const [products, setProducts] = useState<IProduct[]>([]);
+  const [paginatedProducts, setProducts] = useState<IPaginatedProducts>({} as IPaginatedProducts);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [params, setParams] = useState<IFilterParams>(initialParams);
@@ -36,7 +36,7 @@ export default function useProducts(initialParams: IFilterParams = {}) {
   };
 
   return {
-    products,
+    paginatedProducts,
     loading,
     error,
     params,

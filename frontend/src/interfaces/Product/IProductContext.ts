@@ -1,8 +1,8 @@
-import type IProduct from "./IProduct";
-import type IFilterParams from "../FilteringParams/IFilterParams";
+import type IFilterParams from '../FilteringParams/IFilterParams';
+import type IPaginatedProducts from './IPaginatedProducts';
 
-export interface IProductContext{
-products: IProduct[];
+export interface IProductContext {
+  paginatedProducts: IPaginatedProducts;
   loading: boolean;
   error: string | null;
   params: IFilterParams;

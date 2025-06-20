@@ -6,12 +6,12 @@ import useProducts from "../hooks/useProducts";
 const ProductContext = createContext<IProductContext | undefined>(undefined);
 
 export const ProductsProvider = ({ children }: { children: ReactNode }) => {
-  const { products, loading, error, params, updateParams, refresh } = useProducts();
+  const { paginatedProducts, loading, error, params, updateParams, refresh } = useProducts();
 
   return (
     <ProductContext.Provider
       value={{
-        products,
+        paginatedProducts,
         loading,
         error,
         params,

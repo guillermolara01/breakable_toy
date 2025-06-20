@@ -1,10 +1,7 @@
 package com.products.backend.service.product;
 
 import java.time.LocalDate;
-import java.util.Comparator;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.products.backend.dto.product.ProductRequest;
@@ -51,13 +48,20 @@ public class ProductService implements IProductService{
         direction = direction != null && !direction.isEmpty() ? direction : "asc";
         Comparator<Product> comparator = getComparator(sortBy, direction);
 
+        Set<Long> selectedCategories;
+        if(category != null && !category.isBlank()){
+            String [] categories = category.split("-");
+            selectedCategories = Arrays.stream(categories).map(Long::parseLong).collect(Collectors.toSet());
+        } else {
+            selectedCategories = Set.of();
+        }
         List<ProductResponse> filteredProducts =  repository.findAll().stream()
                 .filter(product -> {
                         return name == null || name.isBlank()|| product.getName().toLowerCase().contains(name.toLowerCase());
                 })
                 .filter(
                         product -> {
-                            return category == null || category.isBlank() || product.getCategory().getName().equalsIgnoreCase(category);
+                            return category == null || category.isBlank() || selectedCategories.contains(product.getCategory().getId());
                         }
                 )
                 .filter(product -> {

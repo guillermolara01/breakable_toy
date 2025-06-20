@@ -1,5 +1,6 @@
 package com.products.backend.controller;
 
+import com.products.backend.dto.product.PaginatedProducts;
 import com.products.backend.dto.product.ProductRequest;
 import com.products.backend.dto.product.ProductResponse;
 import com.products.backend.service.product.IProductService;
@@ -20,7 +21,7 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductResponse>> getAllProducts(
+    public ResponseEntity<PaginatedProducts> getAllProducts(
             @RequestParam(required = false) String name,
             @RequestParam (required = false)String category,
             @RequestParam (required = false)Boolean available,
@@ -30,7 +31,9 @@ public class ProductController {
             @RequestParam(defaultValue = "10") int size
     ) {
         List<ProductResponse> products = productService.getAllProducts(name, category, available, sortBy, direction, page, size);
-        return ResponseEntity.ok(products);
+        PaginatedProducts paginated = new PaginatedProducts(products, page, size);
+
+        return ResponseEntity.ok(paginated);
     }
 
     @GetMapping("/{id}")
@@ -57,7 +60,7 @@ public class ProductController {
         return ResponseEntity.ok(updated);
     }
 
-    @PostMapping("/{id}/outofstock")
+    @PutMapping("/{id}/outofstock")
     public ResponseEntity<ProductResponse> markOutOfStock(@PathVariable Long id) {
 
         ProductResponse updated = productService.markOutOfStock(id);

@@ -1,6 +1,7 @@
 import axios from 'axios'
 import type IProduct from '../interfaces/Product/IProduct';
 import type IFilterParams from '../interfaces/FilteringParams/IFilterParams';
+import type IPaginatedProducts from '../interfaces/Product/IPaginatedProducts';
 
 
 export async function getAllProducts(params: IFilterParams = {}) {
@@ -14,9 +15,9 @@ export async function getAllProducts(params: IFilterParams = {}) {
     if (params.direction) query.append('direction', params.direction);
     query.append('page', String(params.page ?? 0));
     query.append('size', String(params.size ?? 10));
-
-    const result = await axios.get<IProduct[]>(`${import.meta.env.VITE_API_URL}products?${query.toString()}`);
-    return result.data;
+    console.log(query.toString());
+    const result = await axios.get<IPaginatedProducts>(`${import.meta.env.VITE_API_URL}products?${query.toString()}`);
+    return result.data as IPaginatedProducts;
   } catch (error: unknown) {
     console.error(error);
     throw(error);
@@ -68,7 +69,7 @@ export async function setInStock(id:number){
 
 export async function deleteProduct(id: number){
      try{
-        const result = await axios.delete(`${import.meta.env.VITE_API_URL}/products/${id}`);
+        const result = await axios.delete(`${import.meta.env.VITE_API_URL}products/${id}`);
         console.log(result);
 
     }catch(error:unknown){
