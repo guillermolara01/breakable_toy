@@ -3,6 +3,7 @@ package com.products.backend.controller;
 import com.products.backend.dto.product.PaginatedProducts;
 import com.products.backend.dto.product.ProductRequest;
 import com.products.backend.dto.product.ProductResponse;
+import com.products.backend.model.Category;
 import com.products.backend.service.product.IProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -30,10 +31,10 @@ public class ProductController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        List<ProductResponse> products = productService.getAllProducts(name, category, available, sortBy, direction, page, size);
-        PaginatedProducts paginated = new PaginatedProducts(products, page, size);
+        PaginatedProducts products = productService.getAllProducts(name, category, available, sortBy, direction, page, size);
 
-        return ResponseEntity.ok(paginated);
+
+        return ResponseEntity.ok(products);
     }
 
     @GetMapping("/{id}")
@@ -70,7 +71,7 @@ public class ProductController {
     @PutMapping("/{id}/instock")
     public ResponseEntity<ProductResponse> markInStock(
             @PathVariable Long id,
-            @RequestParam Integer quantity
+            @RequestParam (defaultValue = "10") Integer quantity
     ) {
 
         ProductResponse updated = productService.markInStock(id, quantity);
@@ -81,5 +82,11 @@ public class ProductController {
     public ResponseEntity<ProductResponse> deleteProduct(@PathVariable Long id){
         ProductResponse deleted = productService.deleteProductById(id);
         return ResponseEntity.ok(deleted);
+    }
+
+    @GetMapping("/metrics")
+    public ResponseEntity<List<Category>> getMetrics(){
+        List<Category> cats = this.productService.getGeneralMetrics();
+        return  ResponseEntity.ok(cats);
     }
 }

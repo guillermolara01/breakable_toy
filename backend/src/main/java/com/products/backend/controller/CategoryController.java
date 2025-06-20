@@ -1,7 +1,9 @@
 package com.products.backend.controller;
 
+import com.products.backend.dto.category.CategoryRequest;
 import com.products.backend.model.Category;
 import com.products.backend.service.category.ICategoryService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,8 +25,9 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<Category> createCategory(@RequestParam String name) {
-        return ResponseEntity.ok(categoryService.createCategory(name));
+    public ResponseEntity<Category> createCategory(@Valid @RequestBody CategoryRequest request) {
+        System.out.println(request.getName());
+        return ResponseEntity.ok(categoryService.createCategory(request.getName()));
     }
 
     @DeleteMapping("/{id}")

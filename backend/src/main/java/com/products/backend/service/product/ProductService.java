@@ -4,9 +4,13 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.products.backend.dto.product.MetricsResponse;
+import com.products.backend.dto.product.PaginatedProducts;
 import com.products.backend.dto.product.ProductRequest;
 import com.products.backend.dto.product.ProductResponse;
+import com.products.backend.model.Category;
 import com.products.backend.model.Product;
+import com.products.backend.repository.CategoryRepository;
 import com.products.backend.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +18,10 @@ import org.springframework.stereotype.Service;
 public class ProductService implements IProductService{
     // Getting the Repository to store the temporary data
     private final ProductRepository repository;
-
-    public ProductService(ProductRepository repository) {
+    private  final CategoryRepository categories;
+    public ProductService(ProductRepository repository, CategoryRepository categories) {
         this.repository = repository;
+        this.categories = categories;
     }
     
     
@@ -35,7 +40,7 @@ public class ProductService implements IProductService{
     
     
     @Override
-    public List<ProductResponse> getAllProducts(
+    public PaginatedProducts getAllProducts(
             String name,
             String category,
             Boolean available,
@@ -46,7 +51,7 @@ public class ProductService implements IProductService{
     ) {
         sortBy = sortBy != null && !sortBy.isEmpty() ? sortBy : "name";
         direction = direction != null && !direction.isEmpty() ? direction : "asc";
-        Comparator<Product> comparator = getComparator(sortBy, direction);
+        Comparator<Product> comparator = getMultiComparator(sortBy, direction);
 
         Set<Long> selectedCategories;
         if(category != null && !category.isBlank()){
@@ -55,6 +60,8 @@ public class ProductService implements IProductService{
         } else {
             selectedCategories = Set.of();
         }
+        Long all = repository.findAll().stream().count();
+
         List<ProductResponse> filteredProducts =  repository.findAll().stream()
                 .filter(product -> {
                         return name == null || name.isBlank()|| product.getName().toLowerCase().contains(name.toLowerCase());
@@ -73,8 +80,8 @@ public class ProductService implements IProductService{
                 .limit(size)
                 .map(this::setResponseProduct)
                 .toList();
-
-        return  filteredProducts;
+        PaginatedProducts paginated = new PaginatedProducts(filteredProducts, page, size, all.intValue());
+        return  paginated;
     }
 
     @Override
@@ -127,12 +134,36 @@ public class ProductService implements IProductService{
         return  setResponseProduct(deleted);
     }
 
+    @Override
+    public List<Category> getGeneralMetrics(){
+        MetricsResponse metrics = new MetricsResponse();
+        List<Category> cats = this.categories.findAll();
+        return cats;
+    }
+
     private void mapRequestToProduct(ProductRequest request, Product product) {
         product.setName(request.getName());
         product.setCategory(request.getCategory());
         product.setUnitPrice(request.getUnitPrice());
         product.setExpirationDate(request.getExpirationDate());
         product.setStock(request.getStock());
+    }
+
+    private Comparator<Product> getMultiComparator(String sortByRaw, String directionRaw) {
+        String[] sortFields = sortByRaw != null ? sortByRaw.split("-") : new String[]{"name"};
+        String[] directions = directionRaw != null ? directionRaw.split("-") : new String[]{"asc"};
+
+        Comparator<Product> combined = getComparator(sortFields[0], directions.length > 0 ? directions[0] : "asc");
+
+        if (sortFields.length > 1) {
+            for (int i = 1; i < sortFields.length; i++) {
+                String field = sortFields[i];
+                String dir = i < directions.length ? directions[i] : "asc";
+                combined = combined.thenComparing(getComparator(field, dir));
+            }
+        }
+
+        return combined;
     }
 
     private Comparator<Product> getComparator(String sortBy, String direction) {

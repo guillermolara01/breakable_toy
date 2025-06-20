@@ -11,8 +11,8 @@ export async function getAllProducts(params: IFilterParams = {}) {
     if (params.name) query.append('name', params.name);
     if (params.category) query.append('category', params.category);
     if (params.available !== undefined) query.append('available', String(params.available));
-    if (params.sortBy) query.append('sortBy', params.sortBy);
-    if (params.direction) query.append('direction', params.direction);
+    if (params.sortBy) query.append('sortBy', params.sortBy.join('-'));
+    if (params.direction) query.append('direction', params.direction.join('-'));
     query.append('page', String(params.page ?? 0));
     query.append('size', String(params.size ?? 10));
     console.log(query.toString());
@@ -50,7 +50,7 @@ export async function setOutOfStock(id: number){
     try{
         const result = await axios.put(`${import.meta.env.VITE_API_URL}products/${id}/outofstock`);
         console.log(result);
-
+        return result.data;
     }catch(error:unknown){
         console.log(error);
         throw(error);
@@ -58,9 +58,9 @@ export async function setOutOfStock(id: number){
 }
 export async function setInStock(id:number){
     try{
-        const result = await axios.put(`${import.meta.env.BASE_URL}products/${id}/instock`);
+        const result = await axios.put(`${import.meta.env.VITE_API_URL}products/${id}/instock?quantity=10`);
         console.log(result);
-
+        return result.data;
     }catch(error:unknown){
         console.log(error);
         throw(error);

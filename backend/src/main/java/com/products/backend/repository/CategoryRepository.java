@@ -36,10 +36,10 @@ public class CategoryRepository {
     }
 
     public void setPlaceHolders(){
-        save("Electrónica");
-        save("Limpieza");
-        save("Alimentos");
-        save("Entretenimiento");
+        save("Food");
+        save("Cleaning");
+        save("Pharmacy");
+        save("Chem Supplies");
     }
 
 }

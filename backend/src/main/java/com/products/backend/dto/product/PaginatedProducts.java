@@ -9,9 +9,9 @@ public class PaginatedProducts {
     private int size;
 
 
-    public PaginatedProducts(List<ProductResponse> content, int page, int size) {
+    public PaginatedProducts(List<ProductResponse> content, int page, int size, int total) {
         this.products = !content.isEmpty() ? content : null;
-        this.totalElements = !content.isEmpty() ? content.size() : 0;
+        this.totalElements = total;
         this.page = page;
         this.size = size;
         this.totalPages = (int) Math.ceil((double) totalElements / size);

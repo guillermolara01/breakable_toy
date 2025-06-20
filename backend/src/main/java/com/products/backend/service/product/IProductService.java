@@ -1,11 +1,12 @@
 package com.products.backend.service.product;
 import com.products.backend.dto.product.*;
+import com.products.backend.model.Category;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface IProductService {
- List<ProductResponse> getAllProducts(
+ PaginatedProducts getAllProducts(
             String name,
             String category,
             Boolean available,
@@ -24,4 +25,6 @@ public interface IProductService {
     ProductResponse markInStock(Long id, Integer quantity);
       ProductResponse deleteProductById(Long id);
     Optional<ProductResponse> getProductById(Long id);
+
+    List<Category> getGeneralMetrics();
 }
