@@ -11,6 +11,7 @@ import {
   Paper,
   Tooltip,
   Box,
+  Button,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -22,27 +23,30 @@ import {
   setInStock,
   deleteProduct,
 } from '../../../service/productService';
-
+import { formatCurrency } from '../../../utils/formatters/currencyFormatter';
 import type IProduct from '../../../interfaces/Product/IProduct';
 import type { SortDirection } from '../../../types/filters/SortDirection';
 import type { SortField } from '../../../types/filters/SortField';
 import Paginator from '../Paginator/Paginator';
+import type { IProductListProps } from './IProductListProps';
 
 const headCells = [
   { id: 'name', label: 'Name' },
   { id: 'category', label: 'Category' },
-  { id: 'unitPrice', label: 'Price ($)' },
+  { id: 'price', label: 'Price ($)' },
   { id: 'expirationDate', label: 'Expiration' },
   { id: 'stock', label: 'Stock' },
   { id: 'actions', label: 'Actions' },
 ];
 
-export default function ProductList() {
+export default function ProductList(props: IProductListProps) {
   const { paginatedProducts, updateParams, refresh } = useProductContext();
   const { products, totalElements, page, size } = paginatedProducts;
-
+  const categories = props.categories;
+  console.log(categories);
   const [orderBy, setOrderBy] = useState<SortField[]>(['name']);
   const [order, setOrder] = useState<SortDirection[]>(['asc']);
+    
 
   const handleRequestSort = (property: string) => {
     const index = orderBy.indexOf(property as SortField);
@@ -95,6 +99,16 @@ export default function ProductList() {
 
   return (
     <Paper sx={{ width: '100%', maxWidth: '1250px', mb: 2, padding: 2 }}>
+      <Box sx={{ width: '100%' }}>
+        <Box width={'16vw'}>
+          <Button
+            variant='outlined'
+            size='small'
+            onClick={()=>props.handleToggleModal(true, true)}>
+            Search
+          </Button>
+        </Box>
+      </Box>
       <TableContainer>
         <Table size='small'>
           <TableHead>
@@ -150,7 +164,7 @@ export default function ProductList() {
                 </TableCell>
                 <TableCell>{product.name}</TableCell>
                 <TableCell>{product.category.name}</TableCell>
-                <TableCell>{product.unitPrice.toFixed(2)}</TableCell>
+                <TableCell>{formatCurrency(product.unitPrice)}</TableCell>
                 <TableCell>{product.expirationDate}</TableCell>
                 <TableCell>{product.stock}</TableCell>
                 <TableCell>

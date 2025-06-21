@@ -1,5 +1,7 @@
 package com.products.backend.controller;
 
+import com.products.backend.classes.metrics.Metric;
+import com.products.backend.dto.product.MetricsResponse;
 import com.products.backend.dto.product.PaginatedProducts;
 import com.products.backend.dto.product.ProductRequest;
 import com.products.backend.dto.product.ProductResponse;
@@ -85,8 +87,8 @@ public class ProductController {
     }
 
     @GetMapping("/metrics")
-    public ResponseEntity<List<Category>> getMetrics(){
-        List<Category> cats = this.productService.getGeneralMetrics();
-        return  ResponseEntity.ok(cats);
+    public ResponseEntity<List<Metric>> getMetrics(){
+        List<Metric> metrics = this.productService.getGeneralMetrics();
+        return  ResponseEntity.ok(metrics);
     }
 }

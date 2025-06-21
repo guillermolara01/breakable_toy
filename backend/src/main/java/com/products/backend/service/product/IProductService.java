@@ -1,6 +1,7 @@
 package com.products.backend.service.product;
+import com.products.backend.classes.metrics.Metric;
 import com.products.backend.dto.product.*;
-import com.products.backend.model.Category;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -26,5 +27,5 @@ public interface IProductService {
       ProductResponse deleteProductById(Long id);
     Optional<ProductResponse> getProductById(Long id);
 
-    List<Category> getGeneralMetrics();
+   List<Metric> getGeneralMetrics();
 }

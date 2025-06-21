@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.products.backend.classes.metrics.Metric;
 import com.products.backend.dto.product.MetricsResponse;
 import com.products.backend.dto.product.PaginatedProducts;
 import com.products.backend.dto.product.ProductRequest;
@@ -135,10 +136,28 @@ public class ProductService implements IProductService{
     }
 
     @Override
-    public List<Category> getGeneralMetrics(){
-        MetricsResponse metrics = new MetricsResponse();
+    public List<Metric> getGeneralMetrics(){
+        List<Metric> metrics = new ArrayList<Metric>();
         List<Category> cats = this.categories.findAll();
-        return cats;
+        int overallQuantity = 0;
+        double overallValue = 0;
+        for(Category category: cats){
+            List<Product> categoryProducts = this.repository.findAll().stream().filter(product -> product.getCategory().getId() == category.getId()).toList();
+            int quantity = categoryProducts.stream().map(Product::getStock).reduce(0, Integer::sum);
+            double value = categoryProducts.stream().map(product -> {return  product.getStock() * product.getUnitPrice();}).reduce(0.0, Double::sum);
+            double averagePrice = quantity > 0 ? value / quantity : 0;
+            overallQuantity+= quantity;
+            overallValue += value;
+
+            Metric categoryMetric = new Metric(category, quantity, value, averagePrice);
+            metrics.add(categoryMetric);
+        }
+        double overallAveragePrice = overallQuantity > 0 ? overallValue / overallQuantity : 0;
+        Category overallCategory = new Category();
+        overallCategory.setName("Overall");
+        Metric overalMetric = new Metric(overallCategory, overallQuantity, overallValue, overallAveragePrice);
+        metrics.add(overalMetric);
+        return metrics;
     }
 
     private void mapRequestToProduct(ProductRequest request, Product product) {

@@ -12,7 +12,7 @@ import {
   useTheme,
 } from '@mui/material';
 import { useProductContext } from '../../../context/ProductContext';
-import type ISearchBarProps from '../../../interfaces/FilteringParams/ISearchBarProps';
+import type ISearchBarProps from './ISearchBarProps';
 import type ICategory from '../../../interfaces/Category/ICategory';
 
 const SearchBar = ({ categories }: ISearchBarProps) => {
