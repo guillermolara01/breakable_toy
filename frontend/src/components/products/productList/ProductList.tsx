@@ -29,6 +29,7 @@ import type { SortDirection } from '../../../types/filters/SortDirection';
 import type { SortField } from '../../../types/filters/SortField';
 import Paginator from '../Paginator/Paginator';
 import type { IProductListProps } from './IProductListProps';
+import ProductModal from '../ProductModal/ProductModal';
 
 const headCells = [
   { id: 'name', label: 'Name' },
@@ -43,10 +44,27 @@ export default function ProductList(props: IProductListProps) {
   const { paginatedProducts, updateParams, refresh } = useProductContext();
   const { products, totalElements, page, size } = paginatedProducts;
   const categories = props.categories;
-  console.log(categories);
+  const [selectedProduct, setSelectedProduct] = useState<IProduct | undefined>(
+    undefined
+  );
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [orderBy, setOrderBy] = useState<SortField[]>(['name']);
   const [order, setOrder] = useState<SortDirection[]>(['asc']);
-    
+  const [editMode, setEditMode] = useState<boolean>(false);
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setSelectedProduct(undefined);
+  };
+
+  const handleOpenModal = (product?: IProduct) => {
+    if (product) {
+      setSelectedProduct(product);
+      setEditMode(true);
+    } else {
+      setEditMode(false);
+    }
+    setModalOpen(true);
+  };
 
   const handleRequestSort = (property: string) => {
     const index = orderBy.indexOf(property as SortField);
@@ -99,13 +117,21 @@ export default function ProductList(props: IProductListProps) {
 
   return (
     <Paper sx={{ width: '100%', maxWidth: '1250px', mb: 2, padding: 2 }}>
+      <ProductModal
+        open={modalOpen}
+        handleClose={handleCloseModal}
+        initialData={selectedProduct}
+        editMode={editMode}
+        categories={categories}></ProductModal>
       <Box sx={{ width: '100%' }}>
         <Box width={'16vw'}>
           <Button
             variant='outlined'
             size='small'
-            onClick={()=>props.handleToggleModal(true, true)}>
-            Search
+            onClick={() => {
+              handleOpenModal(undefined);
+            }}>
+            New Product
           </Button>
         </Box>
       </Box>
@@ -170,7 +196,7 @@ export default function ProductList(props: IProductListProps) {
                 <TableCell>
                   <Tooltip title='Edit'>
                     <IconButton color='primary'>
-                      <EditIcon />
+                      <EditIcon onClick={() => handleOpenModal(product)} />
                     </IconButton>
                   </Tooltip>
                   <Tooltip title='Delete'>
