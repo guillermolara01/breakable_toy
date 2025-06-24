@@ -79,16 +79,8 @@ export async function setInStock(id: number) {
 }
 
 export async function updateProduct(product: IProduct) {
-/*
-    ToDo:
-    Update!  
-*/
     try {
-    const result = await axios.put(
-      `${import.meta.env.VITE_API_URL}products/${
-        product.id
-      }/instock?quantity=10`
-    );
+    const result = await axios.put(`${import.meta.env.VITE_API_URL}products/${product.id}`, product);
     console.log(result);
     return result.data;
   } catch (error: unknown) {
