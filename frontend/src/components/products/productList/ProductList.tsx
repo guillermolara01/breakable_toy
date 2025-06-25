@@ -12,6 +12,8 @@ import {
   Tooltip,
   Box,
   Button,
+  CircularProgress,
+  Backdrop,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -27,9 +29,14 @@ import { formatCurrency } from '../../../utils/formatters/currencyFormatter';
 import type IProduct from '../../../interfaces/Product/IProduct';
 import type { SortDirection } from '../../../types/filters/SortDirection';
 import type { SortField } from '../../../types/filters/SortField';
-import Paginator from '../Paginator/Paginator';
+import Paginator from '../../shared/Paginator/Paginator';
 import type { IProductListProps } from './IProductListProps';
 import ProductModal from '../ProductModal/ProductModal';
+import {
+  getColorByExpirationDate,
+  getStockCellStyle,
+} from './helpers/rowDecoration';
+import { useThemeContext } from '../../../theme/themeContext';
 
 const headCells = [
   { id: 'name', label: 'Name' },
@@ -41,7 +48,10 @@ const headCells = [
 ];
 
 export default function ProductList(props: IProductListProps) {
-  const { paginatedProducts, updateParams, refresh } = useProductContext();
+  const theme = useThemeContext();
+  console.log(theme);
+  const { paginatedProducts, updateParams, refresh, loading } =
+    useProductContext();
   const { products, totalElements, page, size } = paginatedProducts;
   const categories = props.categories;
   const [selectedProduct, setSelectedProduct] = useState<IProduct | undefined>(
@@ -136,6 +146,14 @@ export default function ProductList(props: IProductListProps) {
         </Box>
       </Box>
       <TableContainer>
+        {
+          <Backdrop
+            open={loading && !modalOpen}
+            sx={{ width: '100%', height: '100%' }}>
+            {' '}
+            <CircularProgress color='inherit' />{' '}
+          </Backdrop>
+        }
         <Table size='small'>
           <TableHead>
             <TableRow>
@@ -177,38 +195,44 @@ export default function ProductList(props: IProductListProps) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {products?.map((product) => (
-              <TableRow
-                key={product.id}
-                hover>
-                <TableCell padding='checkbox'>
-                  <Checkbox
-                    color='primary'
-                    checked={false}
-                    onChange={() => handleStockToggle(product)}
-                  />
-                </TableCell>
-                <TableCell>{product.name}</TableCell>
-                <TableCell>{product.category.name}</TableCell>
-                <TableCell>{formatCurrency(product.unitPrice)}</TableCell>
-                <TableCell>{product.expirationDate}</TableCell>
-                <TableCell>{product.stock}</TableCell>
-                <TableCell>
-                  <Tooltip title='Edit'>
-                    <IconButton color='primary'>
-                      <EditIcon onClick={() => handleOpenModal(product)} />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title='Delete'>
-                    <IconButton
-                      color='error'
-                      onClick={() => handleDelete(product.id)}>
-                      <DeleteIcon />
-                    </IconButton>
-                  </Tooltip>
-                </TableCell>
-              </TableRow>
-            ))}
+            {products &&
+              products?.map((product) => (
+                <TableRow
+                  key={product.id}
+                  sx={getColorByExpirationDate(
+                    theme.mode,
+                    product.expirationDate
+                  )}>
+                  <TableCell padding='checkbox'>
+                    <Checkbox
+                      color='primary'
+                      checked={false}
+                      onChange={() => handleStockToggle(product)}
+                    />
+                  </TableCell>
+                  <TableCell sx={{textDecoration: product.stock == 0 ? 'line-through': 'none'}}>{product.name}</TableCell>
+                  <TableCell>{product.category.name}</TableCell>
+                  <TableCell>{formatCurrency(product.unitPrice)}</TableCell>
+                  <TableCell>{product.expirationDate}</TableCell>
+                  <TableCell sx={getStockCellStyle(product.stock, theme.mode)}>
+                    {product.stock}
+                  </TableCell>
+                  <TableCell>
+                    <Tooltip title='Edit'>
+                      <IconButton color='primary'>
+                        <EditIcon onClick={() => handleOpenModal(product)} />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title='Delete'>
+                      <IconButton
+                        color='error'
+                        onClick={() => handleDelete(product.id)}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
         <Box>

@@ -9,6 +9,31 @@ interface ThemeContextProps {
 
 const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
 
+const commonPalette = {
+   primary: {
+    main: '#978BC8', 
+  },
+  secondary: {
+    main: '#574F92', 
+  },
+
+}
+
+const lightTheme = createTheme({
+  palette: {
+    mode: 'light',
+    ...commonPalette,
+  },
+});
+
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+    ...commonPalette,
+  },
+});
+
+
 export const useThemeContext = () => {
   const ctx = useContext(ThemeContext);
   if (!ctx) throw new Error("ThemeContext not found");
@@ -22,21 +47,24 @@ export const ThemeContextProvider = ({ children }: { children: React.ReactNode }
     setMode((prev) => (prev === 'light' ? 'dark' : 'light'));
   };
 
-  const theme = useMemo(() =>
-    createTheme({
-      palette: {
-        mode,
-      },
-      components: {
-        MuiButton: {
-          styleOverrides: {
-            root: {
-              borderRadius: 8,
-            },
-          },
-        },
-      },
-    }), [mode]);
+  // const theme = useMemo(() =>
+  //   createTheme({
+  //     palette: {
+  //       mode,
+  //     },
+  //     components: {
+  //       MuiButton: {
+  //         styleOverrides: {
+  //           root: {
+  //             borderRadius: 8,
+  //           },
+  //         },
+  //       },
+  //     },
+  //   }), [mode]);
+
+  const theme = useMemo(() => (mode === 'light' ? lightTheme : darkTheme), [mode]);
+
 
   return (
     <ThemeContext.Provider value={{ mode, toggleTheme }}>
