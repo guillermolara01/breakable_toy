@@ -1,25 +1,29 @@
+type ThemeMode = 'light' | 'dark';
 
-const colors = {
-  'dark': {
+const colors: Record<ThemeMode, {
+  nearExpire: string;
+  middleExpire: string;
+  farExpire: string;
+  warningStock: string;
+  lowStock: string;
+}> = {
+  dark: {
     nearExpire: '#632929',
-    middleExpire: '#C4B265',
+    middleExpire: '#69632B',
     farExpire: '#244B23',
     warningStock: '#BE824A',
-    lowStock: '#9B4343'
+    lowStock: '#9B4343',
   },
-  'light': {
+  light: {
     nearExpire: '#FAC3C3',
     middleExpire: '#F5EFB7',
     farExpire: '#B7F5BD',
     warningStock: '#F9BB82',
-    lowStock: '#D96B6B'
+    lowStock: '#D96B6B',
   },
 };
 
-export function getColorByExpirationDate(
-  theme: string,
-  expirationDate?: string
-) {
+export function getColorByExpirationDate(theme: ThemeMode, expirationDate?: string) {
   if (!expirationDate) return {};
   try {
     const currentDate = new Date();
@@ -35,18 +39,22 @@ export function getColorByExpirationDate(
       style.backgroundColor = themeColors.nearExpire;
     } else if (daysLeft < 14) {
       style.backgroundColor = themeColors.middleExpire;
-    } else {
-      style.backgroundColor = themeColors.farExpire;
     }
     return style;
-  } catch (error: unknown) {
+  } catch (error) {
     console.log(error);
     return {};
   }
 }
 
-export function getStockCellStyle(stock: number, theme: string) {
-  if (stock === 0) return { backgroundColor: colors[theme].lowStock, color: theme == 'dark' ? '#f1fff':'#1B1313', fontWeight: 'bold' };
+export function getStockCellStyle(stock: number, theme: ThemeMode) {
+  if (stock === 0) {
+    return {
+      backgroundColor: colors[theme].lowStock,
+      color: theme === 'dark' ? '#f1fff' : '#1B1313',
+      fontWeight: 'bold',
+    };
+  }
   if (stock < 5) return { backgroundColor: colors[theme].lowStock };
   if (stock < 11) return { backgroundColor: colors[theme].warningStock };
   return undefined;

@@ -14,6 +14,7 @@ import {
   Button,
   CircularProgress,
   Backdrop,
+  Typography,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -133,6 +134,11 @@ export default function ProductList(props: IProductListProps) {
         initialData={selectedProduct}
         editMode={editMode}
         categories={categories}></ProductModal>
+      <Typography
+        sx={{ fontSize: '1.2rem', textAlign: 'center', fontWeight: 600 }}>
+        Product Invetory
+      </Typography>
+
       <Box sx={{ width: '100%' }}>
         <Box width={'16vw'}>
           <Button
@@ -210,7 +216,13 @@ export default function ProductList(props: IProductListProps) {
                       onChange={() => handleStockToggle(product)}
                     />
                   </TableCell>
-                  <TableCell sx={{textDecoration: product.stock == 0 ? 'line-through': 'none'}}>{product.name}</TableCell>
+                  <TableCell
+                    sx={{
+                      textDecoration:
+                        product.stock == 0 ? 'line-through' : 'none',
+                    }}>
+                    {product.name}
+                  </TableCell>
                   <TableCell>{product.category.name}</TableCell>
                   <TableCell>{formatCurrency(product.unitPrice)}</TableCell>
                   <TableCell>{product.expirationDate}</TableCell>

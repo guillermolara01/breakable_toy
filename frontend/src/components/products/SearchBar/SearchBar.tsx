@@ -19,8 +19,7 @@ import type ICategory from '../../../interfaces/Category/ICategory';
 const SearchBar = ({ categories }: ISearchBarProps) => {
   const { updateParams } = useProductContext();
   const [name, setName] = useState('');
-  const [selectedCategories, setSelectedCategories] =
-    useState<ICategory[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<ICategory[]>([]);
   const [availability, setAvailability] = useState<string>(' ');
   const theme = useTheme();
 
@@ -63,6 +62,7 @@ const SearchBar = ({ categories }: ISearchBarProps) => {
         borderRadius: 2,
         backgroundColor: theme.palette.background.paper,
       }}>
+      <Typography sx={{fontSize: '1.2rem', textAlign: 'center', fontWeight: 600}}>Search and Filter Products</Typography>
       {/* Product Name */}
       <Box
         display='flex'
@@ -90,14 +90,14 @@ const SearchBar = ({ categories }: ISearchBarProps) => {
           pt={1}>
           Categories:
         </Typography>
-        <Box flex={1} mt={2}>
+        <Box
+          flex={1}
+          mt={2}>
           <FormControl
             fullWidth
-            size='small'
-            >
+            size='small'>
             <Select
               multiple
-              
               value={selectedCategories.map((cat) => cat.id)}
               onChange={(e) => {
                 const ids = e.target.value as number[];

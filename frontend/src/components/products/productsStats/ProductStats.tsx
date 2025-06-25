@@ -35,7 +35,10 @@ export default function ProductStats() {
         <Box
           width={'100%'}
           textAlign={'center'}>
-          <Typography>General Metrics</Typography>
+          <Typography
+            sx={{ fontSize: '1.2rem', textAlign: 'center', fontWeight: 600 }}>
+            General Metrics
+          </Typography>
         </Box>
         <TableContainer>
           <Table size='small'>
@@ -57,8 +60,8 @@ export default function ProductStats() {
               {metrics?.map((metric) => {
                 const applyBoldness = metric.category.name == 'Overall';
                 const cellStyles = {
-                    fontWeight: 'bold'
-                }
+                  fontWeight: 'bold',
+                };
                 return (
                   <TableRow
                     key={metric.category.name}

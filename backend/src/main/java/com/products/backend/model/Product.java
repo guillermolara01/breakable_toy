@@ -11,6 +11,18 @@ public class Product {
     private LocalDate createdAt;
     private LocalDate updatedAt;
 
+    public  Product(){
+
+    }
+    public Product(String name, String category, Double unitPrice, LocalDate date, int stock){
+        this.name = name;
+        this.category = new Category();
+        this.category.setName(category);
+        this.category.setId(0);
+        this.unitPrice = unitPrice;
+        this.expirationDate = date;
+        this.stock = stock;
+    }
     public Long getId() {
         return id;
     }
