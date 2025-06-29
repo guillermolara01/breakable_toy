@@ -39,7 +39,7 @@ public class CategoryRepository {
         save("Food");
         save("Cleaning");
         save("Pharmacy");
-        save("Chem Supplies");
+        save("Electronics");
     }
 
 }
