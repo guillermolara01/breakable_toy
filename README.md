@@ -11,7 +11,8 @@ A full-stack inventory management system built with **Spring Boot** on the backe
 - Custom metrics (Stock totals, Value by category, Average Price)
 - Layered architecture (Controller → Service → Repository)
 - Unit tested with JUnit + Mockito
-
+- API Docs with Swagger
+  
 ### Frontend (React + TypeScript) ⚛️
 - MUI components and theming (light/dark mode)
 - Product creation, editing, deletion
@@ -31,6 +32,11 @@ A full-stack inventory management system built with **Spring Boot** on the backe
 - Java 17+
 - Maven 3+
 
+#### Installing Dependencies
+```bash
+ mvn install
+```
+
 #### Run the backend
 ##### You might need to go to the backend folder
 ```bash
@@ -41,6 +47,12 @@ cd backend
 mvn spring-boot:run
 ```
 ##### Backend Runs on port **9090**.
+
+##### Swagger API Docs
+#### Can be accessed on:
+#### `http://localhost:9090/api/swagger-ui/index.html#/`
+
+#### (The backend app needs to be running)
 
 #### Test the backend
 
