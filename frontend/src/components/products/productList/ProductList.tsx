@@ -6,8 +6,8 @@ import {
   TableHead,
   TableRow,
   TableSortLabel,
-  Checkbox,
   IconButton,
+  Dialog,
   Paper,
   Tooltip,
   Box,
@@ -62,6 +62,11 @@ export default function ProductList(props: IProductListProps) {
   const [orderBy, setOrderBy] = useState<SortField[]>(['name']);
   const [order, setOrder] = useState<SortDirection[]>(['asc']);
   const [editMode, setEditMode] = useState<boolean>(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [toDeleteProductId, setToDeleteProductId] = useState<number | null>(
+    null
+  );
+
   const handleCloseModal = () => {
     setModalOpen(false);
     setSelectedProduct(undefined);
@@ -121,9 +126,18 @@ export default function ProductList(props: IProductListProps) {
     refresh();
   };
 
-  const handleDelete = async (id: number) => {
-    await deleteProduct(id);
-    refresh();
+  const confirmDelete = (id: number) => {
+    setToDeleteProductId(id);
+    setConfirmOpen(true);
+  };
+
+  const handleDeleteConfirmed = async () => {
+    if (toDeleteProductId !== null) {
+      await deleteProduct(toDeleteProductId);
+      refresh();
+    }
+    setToDeleteProductId(null);
+    setConfirmOpen(false);
   };
 
   return (
@@ -134,6 +148,28 @@ export default function ProductList(props: IProductListProps) {
         initialData={selectedProduct}
         editMode={editMode}
         categories={categories}></ProductModal>
+
+      <Dialog
+        open={confirmOpen}
+        onClose={() => setConfirmOpen(false)}>
+        <Box sx={{ p: 2 }}>
+          <Typography>Are you sure you want to delete this product?</Typography>
+          <Box
+            display='flex'
+            justifyContent='flex-end'
+            mt={2}
+            gap={1}>
+            <Button onClick={() => setConfirmOpen(false)}>Cancel</Button>
+            <Button
+              onClick={handleDeleteConfirmed}
+              color='error'
+              variant='contained'>
+              Delete
+            </Button>
+          </Box>
+        </Box>
+      </Dialog>
+
       <Typography
         sx={{ fontSize: '1.2rem', textAlign: 'center', fontWeight: 600 }}>
         Product Invetory
@@ -151,6 +187,12 @@ export default function ProductList(props: IProductListProps) {
           </Button>
         </Box>
       </Box>
+      {totalElements == 0 ? (
+        <Typography sx={{ textAlign: 'center' }}>
+          No registered products, click the button to add a{' '}
+          <strong>new product</strong>
+        </Typography>
+      ) : null}
       <TableContainer>
         {
           <Backdrop
@@ -200,6 +242,7 @@ export default function ProductList(props: IProductListProps) {
               ))}
             </TableRow>
           </TableHead>
+
           <TableBody>
             {products &&
               products?.map((product) => (
@@ -210,11 +253,13 @@ export default function ProductList(props: IProductListProps) {
                     product.expirationDate
                   )}>
                   <TableCell padding='checkbox'>
-                    <Checkbox
-                      color='primary'
-                      checked={false}
-                      onChange={() => handleStockToggle(product)}
-                    />
+                    <Button
+                      sx={{ padding: '2px', fontSize: '0.65rem' }}
+                      color={product.stock == 0 ? 'secondary' : 'warning'}
+                      variant='contained'
+                      onClick={() => handleStockToggle(product)}>
+                      {product.stock == 0 ? 'Set Default Stock' : 'Set Out Of Stock'}
+                    </Button>
                   </TableCell>
                   <TableCell
                     sx={{
@@ -238,7 +283,7 @@ export default function ProductList(props: IProductListProps) {
                     <Tooltip title='Delete'>
                       <IconButton
                         color='error'
-                        onClick={() => handleDelete(product.id)}>
+                        onClick={() => confirmDelete(product.id)}>
                         <DeleteIcon />
                       </IconButton>
                     </Tooltip>
