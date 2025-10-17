@@ -1,4 +1,4 @@
-package com.products.backend.integration;
+package com.products.backend;
 
 import com.products.backend.dto.category.CategoryRequest;
 import com.products.backend.dto.product.ProductRequest;
@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Integration tests for Category endpoints
  */
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,  classes = BackendApplication.class )
 class CategoryIntegrationTest {
 
     @LocalServerPort
@@ -39,7 +39,7 @@ class CategoryIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        baseUrl = "http://localhost:" + port + "/categories";
+        baseUrl = "http://localhost:" + port + "/api/categories";
     }
 
     // ========== GET /categories ==========
@@ -234,7 +234,7 @@ class CategoryIntegrationTest {
                 Category.class
         );
         Category category = categoryResponse.getBody();
-
+        System.out.println(category.getName());
         // Create a product using this category
         ProductRequest productRequest = new ProductRequest();
         productRequest.setName("Product Using Category");
@@ -243,11 +243,10 @@ class CategoryIntegrationTest {
         productRequest.setStock(5);
 
         restTemplate.postForEntity(
-                "http://localhost:" + port + "/products",
+                "http://localhost:" + port + "/api/products",
                 productRequest,
                 String.class
         );
-
         // Act - Try to delete the category
         ResponseEntity<String> response = restTemplate.exchange(
                 baseUrl + "/" + category.getId(),
@@ -255,6 +254,7 @@ class CategoryIntegrationTest {
                 null,
                 String.class
         );
+        System.out.println(response.getBody());
 
         // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);

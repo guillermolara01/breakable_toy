@@ -24,7 +24,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Integration tests for Product endpoints
  * Tests the full application stack with TestRestTemplate
  */
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+        classes = BackendApplication.class
+)
 class ProductIntegrationTest {
 
     @LocalServerPort
@@ -44,7 +47,7 @@ class ProductIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        baseUrl = "http://localhost:" + port + "/products";
+        baseUrl = "http://localhost:" + port + "/api/products";
 
         // Clear existing products
         productRepository.findAll().forEach(p -> productRepository.delete(p.getId()));
@@ -68,9 +71,9 @@ class ProductIntegrationTest {
         // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).contains("products");
-        assertThat(response.getBody()).contains("currentPage");
-        assertThat(response.getBody()).contains("pageSize");
-        assertThat(response.getBody()).contains("totalItems");
+        assertThat(response.getBody()).contains("page");
+        assertThat(response.getBody()).contains("size");
+        assertThat(response.getBody()).contains("totalElements");
     }
 
     // ========== POST /products ==========

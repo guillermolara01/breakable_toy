@@ -1,6 +1,5 @@
 package com.products.backend.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.products.backend.controller.CategoryController;
 import com.products.backend.dto.category.CategoryRequest;
 import com.products.backend.exception.CategoryInUseException;
 import com.products.backend.exception.DuplicateResourceException;

@@ -1,7 +1,6 @@
-package com.products.backend;
+package com.products.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.products.backend.controller.ProductController;
 import com.products.backend.dto.product.PaginatedProducts;
 import com.products.backend.dto.product.ProductRequest;
 import com.products.backend.dto.product.ProductResponse;

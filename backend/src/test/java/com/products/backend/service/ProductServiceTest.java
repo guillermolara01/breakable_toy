@@ -1,4 +1,4 @@
-package com.products.backend;
+package com.products.backend.service;
 
 import com.products.backend.dto.product.PaginatedProducts;
 import com.products.backend.dto.product.ProductRequest;
