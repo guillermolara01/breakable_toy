@@ -7,6 +7,8 @@ import com.products.backend.classes.metrics.Metric;
 import com.products.backend.dto.product.PaginatedProducts;
 import com.products.backend.dto.product.ProductRequest;
 import com.products.backend.dto.product.ProductResponse;
+import com.products.backend.exception.InvalidOperationException;
+import com.products.backend.exception.ResourceNotFoundException;
 import com.products.backend.model.Product;
 import com.products.backend.repository.ProductRepository;
 import com.products.backend.service.metrics.ProductMetricsService;
@@ -15,10 +17,6 @@ import com.products.backend.service.product.filter.ProductFilterFactory;
 import com.products.backend.service.product.sort.ProductSortStrategy;
 import org.springframework.stereotype.Service;
 
-/**
- * Refactored ProductService following Single Responsibility Principle
- * Now focuses only on CRUD operations and delegates filtering/sorting/metrics
- */
 @Service
 public class ProductService implements IProductService {
 
@@ -75,7 +73,7 @@ public class ProductService implements IProductService {
     @Override
     public ProductResponse updateProduct(Long id, ProductRequest request) {
         Product product = repository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Product not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Product", id));
 
         mapRequestToProduct(request, product);
         product.setUpdatedAt(LocalDate.now());
@@ -85,7 +83,7 @@ public class ProductService implements IProductService {
     @Override
     public ProductResponse markOutOfStock(Long id) {
         Product product = repository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Product not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Product", id));
         product.setStock(0);
         product.setUpdatedAt(LocalDate.now());
         return mapToResponse(repository.save(product));
@@ -94,10 +92,10 @@ public class ProductService implements IProductService {
     @Override
     public ProductResponse markInStock(Long id, Integer quantity) {
         Product product = repository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Product not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Product", id));
 
         if (quantity < 0) {
-            throw new IllegalArgumentException("Stock quantity cannot be negative");
+            throw new InvalidOperationException("Stock quantity cannot be negative");
         }
 
         product.setStock(quantity);
@@ -113,7 +111,7 @@ public class ProductService implements IProductService {
     @Override
     public ProductResponse deleteProductById(Long id) {
         Product deleted = repository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Product not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Product", id));
         repository.delete(id);
         return mapToResponse(deleted);
     }
