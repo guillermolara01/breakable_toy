@@ -1,8 +1,24 @@
-package com.products.backend;
+package com.products.backend.service;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.products.backend.dto.product.PaginatedProducts;
 import com.products.backend.dto.product.ProductRequest;
 import com.products.backend.dto.product.ProductResponse;
+import com.products.backend.exception.InvalidOperationException;
+import com.products.backend.exception.ResourceNotFoundException;
 import com.products.backend.model.Category;
 import com.products.backend.model.Product;
 import com.products.backend.repository.CategoryRepository;
@@ -11,14 +27,6 @@ import com.products.backend.service.metrics.ProductMetricsService;
 import com.products.backend.service.product.ProductService;
 import com.products.backend.service.product.filter.ProductFilterFactory;
 import com.products.backend.service.product.sort.ProductSortStrategy;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.time.LocalDate;
-import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 public class ProductServiceTest {
 
@@ -213,7 +221,7 @@ public class ProductServiceTest {
     void shouldThrowExceptionWhenProductNotFound() {
         when(productRepository.findById(999L)).thenReturn(Optional.empty());
 
-        assertThrows(NoSuchElementException.class, () -> {
+        assertThrows(ResourceNotFoundException.class, () -> {
             productService.updateProduct(999L, new ProductRequest());
         });
     }
@@ -229,7 +237,7 @@ public class ProductServiceTest {
 
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
 
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(InvalidOperationException.class, () -> {
             productService.markInStock(1L, -5);
         });
     }
