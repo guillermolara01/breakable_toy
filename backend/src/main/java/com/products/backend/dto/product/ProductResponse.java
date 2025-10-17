@@ -1,13 +1,12 @@
 package com.products.backend.dto.product;
 
-import com.products.backend.model.Category;
-
 import java.time.LocalDate;
+
+import com.products.backend.model.Category;
 
 public class ProductResponse {
     private Long id;
     private String name;
-    private Long categoryId;
     private Double unitPrice;
     private LocalDate expirationDate;
     private Integer stock;
