@@ -3,6 +3,8 @@ package com.products.backend;
 import com.products.backend.dto.product.PaginatedProducts;
 import com.products.backend.dto.product.ProductRequest;
 import com.products.backend.dto.product.ProductResponse;
+import com.products.backend.exception.InvalidOperationException;
+import com.products.backend.exception.ResourceNotFoundException;
 import com.products.backend.model.Category;
 import com.products.backend.model.Product;
 import com.products.backend.repository.CategoryRepository;
@@ -213,7 +215,7 @@ public class ProductServiceTest {
     void shouldThrowExceptionWhenProductNotFound() {
         when(productRepository.findById(999L)).thenReturn(Optional.empty());
 
-        assertThrows(NoSuchElementException.class, () -> {
+        assertThrows(ResourceNotFoundException.class, () -> {
             productService.updateProduct(999L, new ProductRequest());
         });
     }
@@ -229,7 +231,7 @@ public class ProductServiceTest {
 
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
 
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(InvalidOperationException.class, () -> {
             productService.markInStock(1L, -5);
         });
     }
